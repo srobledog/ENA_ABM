@@ -1,0 +1,15 @@
+{
+  "bootstrap_width_over_0_50_share": 0.03225806451612903,
+  "finite_interpretable_profiles": 91,
+  "finite_share": 0.9479166666666666,
+  "median_bootstrap_width": 0.09999999999999998,
+  "multiple_crossing_profiles": 0,
+  "no_competitive_profiles": 4,
+  "profiles": 96,
+  "r_star_max": 2.8,
+  "r_star_median": 1.05,
+  "r_star_min": 0.85,
+  "r_star_p25": 1.0,
+  "r_star_p75": 1.2,
+  "upper_boundary_profiles": 1
+}

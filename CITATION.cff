@@ -1,0 +1,25 @@
+cff-version: 1.2.0
+message: "If you use this software or its outputs, please cite the associated paper and this software release."
+title: "ENA-ABM: Agent-based simulation of direct and referral-based entrepreneurial customer acquisition"
+type: software
+version: 0.5.0
+date-released: 2026-08-25
+url: "https://github.com/srobledog/ENA_ABM"
+repository-code: "https://github.com/srobledog/ENA_ABM"
+license: MIT
+authors:
+  - family-names: "Robledo Giraldo"
+    given-names: "Sebastián"
+  - family-names: "Montoya"
+    given-names: "Alexandra"
+    email: "lamontoyar@unal.edu.co"
+  - family-names: "Cordero Borjas"
+    given-names: "Ana Emilia"
+    email: "acordero2@uc.edu.ve"
+keywords:
+  - agent-based modeling
+  - entrepreneurial marketing
+  - referrals
+  - network activation
+  - customer acquisition
+  - reproducible research

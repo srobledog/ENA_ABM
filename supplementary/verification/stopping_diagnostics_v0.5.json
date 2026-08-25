@@ -1,0 +1,16 @@
+{
+  "accounting_contexts": 9,
+  "blockers": {
+    "accounting_convention_reverses_central_conclusion": false,
+    "budget_rounding_dominance": false,
+    "insufficient_interpretable_profiles": false,
+    "multiple_crossings": false,
+    "widespread_threshold_instability": false
+  },
+  "bootstrap_width_over_0_50_share": 0.03225806451612903,
+  "finite_interpretable_share": 0.9479166666666666,
+  "interpretation_blocked": false,
+  "material_accounting_contexts": 1,
+  "multiple_crossing_share": 0.0,
+  "rounding_residual_over_limit_share_all_cells": 0.13713910761154854
+}

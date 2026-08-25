@@ -1,0 +1,16 @@
+ENA ABM v0.5 automated verification
+Date: 2026-07-25
+
+64 tests executed.
+64 tests passed.
+0 failures.
+0 errors.
+
+Frozen v0.4 source verification:
+15 of 15 registered model-source files match their SHA-256 hashes.
+
+Independent reproduction:
+972,800 paired rows in run1.
+972,800 paired rows in run2.
+34 of 34 principal outputs are byte-identical after deterministic gzip
+header normalization.

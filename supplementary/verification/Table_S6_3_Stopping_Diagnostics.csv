@@ -1,0 +1,6 @@
+diagnostic,observed,criterion,blocker
+Multiple-crossing share,0.0,<= 0.10,False
+Finite interpretable share,0.9479166666666666,>= 0.50,False
+Bootstrap width > 0.50 share,0.03225806451612903,not widespread,False
+Rounding residual over limit share,0.13713910761154854,must also dominate threshold ordering,False
+Material accounting contexts,0.1111111111111111,must reverse central conclusion,False

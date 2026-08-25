@@ -1,0 +1,9 @@
+{
+  "config_sha256": "cc285fc18cfdfeaba9526056b21f84d74afebba8f818bade3f95dc4b35caf2fb",
+  "interpretation_blocked": false,
+  "parameters_empirically_calibrated": false,
+  "pre_execution_design_sha256": "8059a6edf09c13b2f9adcdc66defdcb0b28d8f8102f1a23f0400aeb349d2fe7f",
+  "principal_files": 34,
+  "scientific_status": "main_theoretical_simulation_diagnostic_parameters",
+  "total_paired_rows": 972800
+}

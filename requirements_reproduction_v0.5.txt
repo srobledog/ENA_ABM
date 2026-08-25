@@ -1,0 +1,7 @@
+# Reference environment verified for the Appendix S7 preflight on 2026-08-24
+# The original v0.5 archive did not retain a dependency lock file.
+numpy==2.3.5
+scipy==1.17.0
+pandas==2.2.3
+scikit-learn==1.8.0
+matplotlib==3.10.8

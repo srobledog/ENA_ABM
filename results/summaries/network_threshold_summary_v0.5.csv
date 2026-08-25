@@ -1,0 +1,4 @@
+network_type,profiles,finite_profiles,finite_share,r_star_median,r_star_p25,r_star_p75,r_star_min,r_star_max
+preferential_attachment,32,31,0.96875,1.05,1.0,1.125,0.9,1.7
+ring,32,31,0.96875,1.05,1.0,1.225,0.85,1.8
+small_world,32,29,0.90625,1.05,0.95,1.35,0.9,2.8

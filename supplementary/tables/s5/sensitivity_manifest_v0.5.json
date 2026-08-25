@@ -1,0 +1,21 @@
+{
+  "classification": {
+    "r_1.00": {
+      "competitive_profiles": 74,
+      "competitive_share": 0.7708333333333334,
+      "cross_validated_accuracy": 0.7094736842105263,
+      "profiles": 96,
+      "training_accuracy": 0.875
+    },
+    "r_1.20": {
+      "competitive_profiles": 25,
+      "competitive_share": 0.2604166666666667,
+      "cross_validated_accuracy": 0.8752631578947367,
+      "profiles": 96,
+      "training_accuracy": 0.9583333333333334
+    }
+  },
+  "finite_profiles": 91,
+  "forest_cv_r2_mean": 0.1962931941482714,
+  "forest_cv_r2_sd": 0.8424588995801502
+}

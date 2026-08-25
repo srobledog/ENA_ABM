@@ -1,0 +1,10 @@
+scenario,factor,level,accounting,r_star_primary_grid,r_star_conservative_grid,r_star_probability_grid,r_star_efficiency_grid,crossing_count,material_upward_jumps,competitive_regions,no_competitive_region,competitive_through_upper_bound,interpretable_single_threshold,grid_min,grid_max,grid_points
+structural__baseline,structural,baseline,upfront_expected,1.2,1.15,1.1,1.2,1,0,"[0.25,1.20]",0,0,1,0.25,3.0,16
+structural__mean_degree_high,structural,mean_degree_high,upfront_expected,1.15,1.1,1.1,1.15,1,0,"[0.25,1.15]",0,0,1,0.25,3.0,16
+structural__mean_degree_low,structural,mean_degree_low,upfront_expected,1.25,1.0,1.0,1.25,1,0,"[0.25,1.25]",0,0,1,0.25,3.0,16
+structural__network_preferential_attachment,structural,network_preferential_attachment,upfront_expected,1.05,1.0,1.0,1.05,1,0,"[0.25,1.05]",0,0,1,0.25,3.0,16
+structural__network_ring,structural,network_ring,upfront_expected,1.25,1.0,1.0,1.25,1,0,"[0.25,1.25]",0,0,1,0.25,3.0,16
+structural__network_size_large,structural,network_size_large,upfront_expected,1.25,1.0,1.0,1.25,1,0,"[0.25,1.25]",0,0,1,0.25,3.0,16
+structural__network_size_small,structural,network_size_small,upfront_expected,1.0,0.75,0.75,1.0,1,0,"[0.25,1.00]",0,0,1,0.25,3.0,16
+structural__rewiring_high,structural,rewiring_high,upfront_expected,1.1,1.05,1.05,1.1,1,0,"[0.25,1.10]",0,0,1,0.25,3.0,16
+structural__rewiring_zero,structural,rewiring_zero,upfront_expected,1.25,1.0,1.0,1.25,1,0,"[0.25,1.25]",0,0,1,0.25,3.0,16

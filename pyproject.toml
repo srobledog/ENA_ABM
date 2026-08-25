@@ -1,0 +1,19 @@
+[project]
+name = "ena-abm"
+version = "0.5.0"
+description = "Main theoretical simulation study with diagnostic parameters for Entrepreneurial Network Activation"
+requires-python = ">=3.11"
+dependencies = []
+
+[project.scripts]
+ena-abm = "ena_abm.cli:main"
+
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[tool.setuptools]
+package-dir = {"" = "src"}
+
+[tool.setuptools.packages.find]
+where = ["src"]

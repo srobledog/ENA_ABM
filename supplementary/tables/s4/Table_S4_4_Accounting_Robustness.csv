@@ -1,0 +1,10 @@
+scenario,upfront_r_star,staged_r_star,staged_minus_upfront,absolute_difference_at_least_0_25,upfront_interpretable,staged_interpretable,context
+accounting__baseline,1.15,1.25,0.1,0,1,1,baseline
+accounting__budget_abundant,1.15,1.4,0.25,1,1,1,budget_abundant
+accounting__budget_scarce,1.1,1.2,0.0999999999999998,0,1,1,budget_scarce
+accounting__network_preferential_attachment,1.05,1.15,0.0999999999999998,0,1,1,network_preferential_attachment
+accounting__network_ring,1.2,1.25,0.05,0,1,1,network_ring
+accounting__referrers_abundant,1.1,1.15,0.0499999999999998,0,1,1,referrers_abundant
+accounting__referrers_scarce,1.25,1.3,0.05,0,1,1,referrers_scarce
+accounting__sociality_high,1.5,1.6,0.1,0,1,1,sociality_high
+accounting__sociality_low,0.95,1.0,0.05,0,1,1,sociality_low

@@ -1,0 +1,8 @@
+relative_cost,rule_order,predicted_class,raw_scale_rule,interpretation
+1.0,1,competitive,budget_limit <= 29.49,Lower-budget registered profiles are classified as competitive.
+1.0,2,not competitive,budget_limit > 29.49 AND market_sociality <= 0.625 AND network_type != preferential_attachment,"The only noncompetitive terminal branch combines higher budget, lower sociality, and a non-PA network."
+1.0,3,competitive,all remaining branches,All other terminal branches are classified as competitive.
+1.2,1,not competitive,market_sociality <= 0.437,Lower-sociality profiles are classified as noncompetitive.
+1.2,2,not competitive,market_sociality > 0.437 AND beta_social <= 2.125,Higher sociality is insufficient when responsiveness to social information is low.
+1.2,3,not competitive,market_sociality > 0.437 AND beta_social > 2.125 AND uncertainty_mean <= 0.349,"Social conditions are favorable, but low uncertainty limits the value of social information."
+1.2,4,competitive,market_sociality > 0.437 AND beta_social > 2.125 AND uncertainty_mean > 0.349,"The competitive branch combines sufficient sociality, social influence, and uncertainty."

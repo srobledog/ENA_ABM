@@ -1,0 +1,13 @@
+encoded_parameter,importance_mean_r2_decrease,importance_sd,parameter_label
+continuous__beta_social,0.359990234702588,0.056988875740454,Social-influence coefficient
+continuous__uncertainty_mean,0.3503067353993112,0.0599857161440868,Mean initial uncertainty
+continuous__market_sociality,0.3358865831732406,0.0563234947804007,Market sociality
+continuous__seed_adopters,0.008760499472149,0.0034655873042106,Initial seed adopters
+continuous__beta_individual,0.0066513368301475,0.0016320846706851,Individual-fit coefficient
+continuous__status_mean,0.0064259447322776,0.001604417887671,Mean status-quo satisfaction
+continuous__beta_0,0.0053495704333438,0.0011389199721379,Adoption intercept
+network__network_type_small_world,0.0046015816076109,0.001568207107348,Small-world indicator
+continuous__fit_mean,0.0033049925425388,0.0007106522020521,Mean product fit
+continuous__budget_limit,0.0019154349197581,0.0006375100998832,Allocated budget
+network__network_type_preferential_attachment,0.000276002847828,0.0001346320907221,Preferential-attachment indicator
+network__network_type_ring,2.755324963749306e-05,5.087283882285527e-05,Ring indicator

@@ -1,0 +1,9 @@
+check,result,status
+Automated tests,64/64 passed,Pass
+Frozen v0.4 source files,15/15 SHA-256 matches,Pass
+Run 1 paired rows,"972,800",Pass
+Run 2 paired rows,"972,800",Pass
+Principal outputs,34/34 byte-identical after canonical gzip headers,Pass
+Initially timestamp-sensitive gzip files,7/7 decompressed logical hashes matched,Pass
+Interpretation stop gate,No blocker activated,Pass
+Empirical calibration,Not performed; parameters are diagnostic,Boundary

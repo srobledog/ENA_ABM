@@ -1,0 +1,138 @@
+{
+  "scientific_status": "main_theoretical_simulation_with_diagnostic_parameters",
+  "experiment_seed": 2026072505,
+  "replicates": 400,
+  "bootstrap_samples": 500,
+  "primary_accounting": "upfront_expected",
+  "secondary_accounting": "staged",
+  "relative_cost": {
+    "coarse_grid": [
+      0.25,
+      0.50,
+      0.75,
+      1.00,
+      1.25,
+      1.50,
+      1.75,
+      2.00,
+      2.25,
+      2.50,
+      2.75,
+      3.00
+    ],
+    "refinement_tolerance": 0.05
+  },
+  "main_design": {
+    "method": "deterministic_stratified_latin_hypercube",
+    "profiles": 96,
+    "network_types": [
+      "ring",
+      "small_world",
+      "preferential_attachment"
+    ],
+    "parameter_ranges": {
+      "market_sociality": [0.0, 1.0],
+      "fit_mean": [0.35, 0.80],
+      "status_mean": [0.20, 0.80],
+      "uncertainty_mean": [0.20, 0.85],
+      "beta_0": [-1.50, 0.50],
+      "beta_individual": [1.0, 6.0],
+      "beta_social": [0.0, 6.0],
+      "budget_limit": [8, 60],
+      "seed_adopters": [1, 8]
+    },
+    "fixed_parameters": {
+      "n_consumers": 100,
+      "mean_degree": 6,
+      "rewire_probability": 0.10,
+      "horizon": 30,
+      "actions_per_tick": 2,
+      "fit_sd": 0.15,
+      "minimum_uncertainty": 0.05,
+      "delta_information": 0.25,
+      "direct_source_credibility": 0.60,
+      "referral_source_credibility": 0.60,
+      "direct_exposure_probability": 0.512,
+      "referral_acceptance_probability": 0.80,
+      "referral_neighbor_availability_probability": 0.80,
+      "referral_introduction_probability": 0.80,
+      "takeoff_share": 0.10,
+      "quiet_period": 5
+    }
+  },
+  "process_robustness": {
+    "contexts": [
+      "ring",
+      "small_world",
+      "preferential_attachment"
+    ],
+    "regimes": {
+      "neutral": {},
+      "equal_high": {
+        "direct_exposure_probability": 0.729,
+        "referral_acceptance_probability": 0.90,
+        "referral_neighbor_availability_probability": 0.90,
+        "referral_introduction_probability": 0.90
+      },
+      "direct_exposure_advantage": {
+        "direct_exposure_probability": 0.80
+      },
+      "referral_exposure_advantage": {
+        "referral_acceptance_probability": 0.90,
+        "referral_neighbor_availability_probability": 0.90,
+        "referral_introduction_probability": 0.90
+      },
+      "acceptance_low": {
+        "referral_acceptance_probability": 0.40
+      },
+      "acceptance_high": {
+        "referral_acceptance_probability": 1.00
+      },
+      "eligible_neighbors_none": {
+        "referral_neighbor_availability_probability": 0.00
+      },
+      "eligible_neighbors_abundant": {
+        "referral_neighbor_availability_probability": 1.00
+      }
+    }
+  },
+  "accounting_robustness_contexts": {
+    "baseline": {},
+    "sociality_low": {"market_sociality": 0.10},
+    "sociality_high": {"market_sociality": 0.90},
+    "budget_scarce": {"budget_limit": 8.0},
+    "budget_abundant": {"budget_limit": 60.0},
+    "referrers_scarce": {"seed_adopters": 1},
+    "referrers_abundant": {"seed_adopters": 8},
+    "network_ring": {"network_type": "ring"},
+    "network_preferential_attachment": {
+      "network_type": "preferential_attachment"
+    }
+  },
+  "structural_robustness_contexts": {
+    "baseline": {},
+    "network_size_small": {"n_consumers": 50},
+    "network_size_large": {"n_consumers": 200},
+    "mean_degree_low": {"mean_degree": 4},
+    "mean_degree_high": {"mean_degree": 10},
+    "rewiring_zero": {"rewire_probability": 0.0},
+    "rewiring_high": {"rewire_probability": 0.30},
+    "network_ring": {"network_type": "ring"},
+    "network_preferential_attachment": {
+      "network_type": "preferential_attachment"
+    }
+  },
+  "dynamic_robustness": {
+    "relative_cost_values": [1.00, 1.20],
+    "takeoff_shares": [0.05, 0.10, 0.15, 0.20],
+    "quiet_periods": [3, 5, 10]
+  },
+  "stopping_rules": {
+    "multiple_crossing_share_max": 0.10,
+    "unstable_bootstrap_interval_width_max": 0.50,
+    "accounting_difference_material": 0.25,
+    "budget_rounding_share_material": 0.10,
+    "minimum_interpretable_profile_share": 0.50,
+    "reproducibility_required": true
+  }
+}
