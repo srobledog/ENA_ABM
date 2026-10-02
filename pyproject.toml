@@ -3,7 +3,7 @@ name = "ena-abm"
 version = "0.5.0"
 description = "Main theoretical simulation study with diagnostic parameters for Entrepreneurial Network Activation"
 requires-python = ">=3.11"
-dependencies = []
+dependencies = ["numpy>=2.0,<3"]
 
 [project.scripts]
 ena-abm = "ena_abm.cli:main"

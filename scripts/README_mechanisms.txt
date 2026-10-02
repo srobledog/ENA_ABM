@@ -10,6 +10,7 @@ From the repository root, with Python 3.11 or later:
   PYTHONPATH=src python scripts/verify_mechanisms_v0_1.py --archive-dir FROZEN_RELEASE_FILES --output verification
   PYTHONPATH=src python scripts/run_mechanisms_v0_1.py --output pilot_run1 --workers 4
   PYTHONPATH=src python scripts/run_mechanisms_v0_1.py --output pilot_run2 --workers 4
+  PYTHONPATH=src python scripts/analyze_mechanisms_v0_1.py --input MAIN_RUN --output MAIN_ANALYSIS
 
 The published release SHA256 is verified before extracting the two archived files:
 main_paired_runs_v0.5.csv.gz and main_fixed_cost_1.20_runs_v0.5.csv.gz.
@@ -32,8 +33,19 @@ The analytical benchmark is diagnostic and has no probabilities fitted to outcom
 
 The pilot is technical, not a confirmatory study. Do not pool its seed namespace
 with the main study. Config main_execution_authorized_by_this_pilot is false.
-The simulation executor is ready; the 10000-sample confirmatory bootstrap analysis
-must be implemented and verified before executing and interpreting the main study.
+The simulation executor and the 10000-sample confirmatory bootstrap are implemented
+and verified. Main execution remains disabled in the frozen pilot configuration.
+
+The analysis command performs 10000 within-profile block-bootstrap samples with
+numpy.PCG64 and the frozen resampling seed. A sampled replicate keeps every arm,
+cost, and reevaluation schedule together. Profiles are not resampled and receive
+equal weight. The eight primary design-mean contrasts (G, L, B, and I at two
+costs under N) receive 99.375% Bonferroni percentile intervals plus nominal 95%
+intervals on the registered new-adopter count scale. Their percentage-point
+translations, secondary E and N-minus-E contrasts, profile estimates, and predefined
+network, sociality, budget, and initial-adopter subgroups receive nominal 95%
+intervals. The technical pilot can test this command only when the explicit
+--allow-technical-pilot flag is supplied; such output is labeled nonconfirmatory.
 
 Event dictionary additions:
 local_candidate_id: local neighbor chosen before the artificial replacement.
