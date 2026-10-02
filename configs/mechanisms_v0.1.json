@@ -1,0 +1,19 @@
+{
+  "protocol_version": "0.1",
+  "base_commit": "e45d11f03da12c67c756f00794041ab1fc7d6dff",
+  "experiment_seed": 2026100201,
+  "resampling_seed": 2026100202,
+  "bootstrap_samples": 10000,
+  "pilot_namespace": "mechanisms_v0.1_pilot",
+  "main_namespace": "mechanisms_v0.1_main",
+  "pilot_profiles": ["P069", "P062", "P018", "P066", "P036", "P087", "P047", "P002", "P008", "P044", "P017", "P041"],
+  "pilot_replicates": 100,
+  "main_replicates": 400,
+  "relative_costs": [1.0, 1.2],
+  "destinations": ["L", "A"],
+  "evidence_modes": [1, 0],
+  "reevaluation_modes": ["N", "E"],
+  "primary_accounting": "upfront_expected",
+  "diagnostic_margin": 0.5,
+  "main_execution_authorized_by_this_pilot": false
+}
