@@ -9,6 +9,7 @@ import json
 import math
 import os
 import platform
+import shutil
 import statistics
 import subprocess
 import time
@@ -23,6 +24,36 @@ from .model import EntrepreneurialNetworkActivationModel
 from .rng import stable_seed
 
 ROOT = Path(__file__).resolve().parents[2]
+
+
+def atomic_json(path, value):
+    path = Path(path)
+    temporary = path.with_name(path.name + '.part')
+    with temporary.open('w', encoding='utf-8') as handle:
+        handle.write(json.dumps(value, indent=2, sort_keys=True) + '\n')
+        handle.flush()
+        os.fsync(handle.fileno())
+    os.replace(temporary, path)
+
+
+def require_space(path, minimum_gib):
+    if shutil.disk_usage(path).free < minimum_gib * 2**30:
+        raise RuntimeError(f'Insufficient free space: require {minimum_gib} GiB')
+
+
+def verify_checkpoint(root, checkpoint):
+    for name, expected in checkpoint['hashes'].items():
+        path = root / name
+        if hashlib.sha256(path.read_bytes()).hexdigest() != expected:
+            raise ValueError(f'Checkpoint hash mismatch: {path}')
+    for kind, metadata in checkpoint['result']['files'].items():
+        digest = hashlib.sha256(); length = 0; rows = 0
+        with gzip.open(root / (kind + '.jsonl.gz'), 'rb') as handle:
+            for line in handle:
+                digest.update(line); length += len(line); rows += 1
+        if (digest.hexdigest(), length, rows) != (metadata['content_sha256'], metadata['uncompressed_bytes'], metadata['rows']):
+            raise ValueError(f'Checkpoint logical mismatch: {kind}')
+    return checkpoint['result']
 
 
 def configuration(profile, *, replicate, master_seed, strategy, cost=1.0, accounting="upfront_expected"):
@@ -173,6 +204,7 @@ def worker(payload):
     writers={key:DeterministicWriter(root/(key+'.jsonl.gz')) for key in ['runs','ticks','events','initializations','final_states','benchmarks']}
     cells = []
     for k in range(replicates):
+        require_space(root, specification.get('_operational_stop_gib', 0))
         namespace = specification['pilot_namespace'] if stage=='pilot' else specification['main_namespace']
         seed=stable_seed(specification['experiment_seed'],namespace,profile['profile'],k)
         common_config=configuration(profile,replicate=k,master_seed=seed,strategy='direct')
@@ -234,7 +266,8 @@ def write_csv(path,rows):
         writer=csv.DictWriter(f,fieldnames=list(rows[0]));writer.writeheader();writer.writerows(rows)
 
 
-def run(specification_path,output_dir,stage='pilot',workers=4):
+def run(specification_path,output_dir,stage='pilot',workers=4, *, resume=False,
+        minimum_free_gib=20, stop_free_gib=5):
     specification=json.loads(Path(specification_path).read_text())
     if stage == 'main' and not specification.get('main_execution_authorized_by_this_pilot', False):
         raise ValueError('This frozen configuration authorizes the technical pilot only')
@@ -242,16 +275,69 @@ def run(specification_path,output_dir,stage='pilot',workers=4):
     assert selected_pilot_profiles(all_profiles)==specification['pilot_profiles']
     selected=[next(p for p in all_profiles if p['profile']==pid) for pid in specification['pilot_profiles']] if stage=='pilot' else all_profiles
     replicates=specification['pilot_replicates'] if stage=='pilot' else specification['main_replicates']
-    output=Path(output_dir);output.mkdir(parents=True,exist_ok=False)
-    write_csv(output/'profiles.csv',selected)
+    if workers < 1 or minimum_free_gib < stop_free_gib or stop_free_gib < 0:
+        raise ValueError('Invalid operational limits')
+    output=Path(output_dir)
+    ancestor = output.parent
+    while not ancestor.exists():
+        ancestor = ancestor.parent
+    require_space(ancestor, stop_free_gib if resume else minimum_free_gib)
+    identity = {'specification': specification, 'stage': stage,
+        'commit': subprocess.check_output(['git','rev-parse','HEAD'],cwd=ROOT,text=True).strip(),
+        'minimum_free_gib': minimum_free_gib, 'stop_free_gib': stop_free_gib}
+    if resume:
+        if json.loads((output/'execution_identity.json').read_text()) != identity:
+            raise ValueError('Resume requires identical configuration, code and operational limits')
+        if (output/'manifest.json').exists():
+            raise ValueError('Execution already complete; do not resume')
+    else:
+        output.mkdir(parents=True,exist_ok=False)
+        write_csv(output/'profiles.csv',selected)
+        atomic_json(output/'execution_identity.json', identity)
     begin=time.perf_counter()
-    payloads=[(p,specification,stage,str(output),replicates) for p in selected]
     results=[]
-    with ProcessPoolExecutor(max_workers=workers) as pool:
-        for result in pool.map(worker,payloads):
-            results.append(result)
-            print(f"Completed {result['profile_id']}: {result['files']['runs']['rows']} trajectories",flush=True)
+    pending=[]
+    for p in selected:
+        root = output/p['profile']
+        checkpoint_path = root/'checkpoint.json'
+        if resume and checkpoint_path.exists():
+            results.append(verify_checkpoint(root, json.loads(checkpoint_path.read_text())))
+        else:
+            if root.exists():
+                recovery = output/'recovery'; recovery.mkdir(exist_ok=True)
+                os.replace(root, recovery/(p['profile'] + '-' + str(time.time_ns())))
+            pending.append(p)
+    operational_spec = {**specification, '_operational_stop_gib': stop_free_gib}
+    try:
+        with ProcessPoolExecutor(max_workers=workers) as pool:
+            # Bounded batches avoid submitting the entire study before a stop.
+            for start in range(0, len(pending), workers):
+                require_space(output, stop_free_gib)
+                payloads=[(p,operational_spec,stage,str(output),replicates) for p in pending[start:start+workers]]
+                futures = [pool.submit(worker, payload) for payload in payloads]
+                errors=[]
+                for future in futures:
+                    try:
+                        result=future.result()
+                        root=output/result['profile_id']
+                        checkpoint={'result':result, 'hashes':{p.name:hashlib.sha256(p.read_bytes()).hexdigest()
+                            for p in root.iterdir() if p.is_file() and not p.name.endswith('.part')}}
+                        verify_checkpoint(root, checkpoint)
+                        atomic_json(root/'checkpoint.json', checkpoint)
+                        results.append(result)
+                        print(f"Completed {result['profile_id']}: {result['files']['runs']['rows']} trajectories",flush=True)
+                    except Exception as error:
+                        errors.append(error)
+                if errors:
+                    raise errors[0]
+    except (Exception, KeyboardInterrupt) as error:
+        atomic_json(output/'interruption.json', {'error':str(error), 'completed_profiles':sorted(p['profile_id'] for p in results)})
+        raise
+    order={p['profile']:i for i,p in enumerate(selected)}
+    results.sort(key=lambda p:order[p['profile_id']])
     contrasts=[r for profile in results for r in profile.pop('contrasts')]
+    contrast_fields = ['profile_id','replicate_id','r','schedule','G','G_A1','G_L0','G_A0','L','B','I']
+    contrasts = [{key:row[key] for key in contrast_fields} for row in contrasts]
     write_csv(output/'paired_contrasts.csv',contrasts)
     summaries=[]
     for pid in [p['profile'] for p in selected]:
@@ -272,7 +358,8 @@ def run(specification_path,output_dir,stage='pilot',workers=4):
         'elapsed_seconds':time.perf_counter()-begin,'workers':workers,'python':platform.python_version(),
         'platform':platform.platform(),'per_profile':results,
         'full_data_sha256':{str(p.relative_to(output)):hashlib.sha256(p.read_bytes()).hexdigest()
-            for p in sorted(output.rglob('*')) if p.is_file()}}
+            for p in sorted(output.rglob('*')) if p.is_file() and not p.name.endswith('.part')
+            and 'recovery' not in p.relative_to(output).parts}}
     for profile in results:
         for kind, metadata in profile['files'].items():
             name=profile['profile_id']+'/'+kind+'.jsonl.gz'

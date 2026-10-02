@@ -31,6 +31,20 @@ temporary files. Manifests contain runtime metadata. Use the comparison command:
   python scripts/compare_mechanisms_v0_1.py --first pilot_run1 --second pilot_run2 --output reproduction.json
 The analytical benchmark is diagnostic and has no probabilities fitted to outcomes.
 
+Operational controls: a new execution requires 20 GiB free by default. Workers
+check the 5 GiB reserve before each replicate, and the parent before each bounded
+batch. These checks are preventive, not a hard disk quota; concurrent writes can
+temporarily cross the reserve. Adjust with --minimum-free-gib and --stop-free-gib.
+Use --resume with the SAME output, configuration, code commit and limits after
+an interruption. Every completed profile has an atomic checkpoint; compressed
+hashes, logical hashes, row counts and gzip CRC are checked before reuse.
+Incomplete profiles are moved into output/recovery (not deleted) and regenerated
+with their original deterministic seeds. Recovery copies still consume space.
+Interruption handling waits for active workers to settle; it is not instant.
+Do not change the code commit between start and resume. Only a final manifest
+marks a scientifically complete dataset. Checkpoints do not replace an external
+backup and cannot recover data removed by workspace maintenance.
+
 The pilot is technical, not a confirmatory study. Do not pool its seed namespace
 with the main study. Config main_execution_authorized_by_this_pilot is false.
 The simulation executor and the 10000-sample confirmatory bootstrap are implemented
