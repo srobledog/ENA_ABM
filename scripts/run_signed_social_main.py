@@ -4,13 +4,28 @@ The external upload command is a current library_upload.py helper. Its receipt
 must explicitly acknowledge each archive. An uncertain write blocks resume.
 Only local copies of archived heavy streams are removed; runs/checkpoints stay.
 """
-import argparse,csv,hashlib,json,os,platform,subprocess,time,zipfile
+import argparse,csv,hashlib,json,os,platform,subprocess,time,zipfile,shutil,tempfile
 from concurrent.futures import ProcessPoolExecutor,as_completed
 from pathlib import Path
 from run_signed_social_pilot import worker,sha
 from ena_abm.mechanism_experiment import ROOT,profiles,atomic_json,write_csv,verify_checkpoint,require_space
 
 HEAVY=['events.jsonl.gz','ticks.jsonl.gz','initializations.jsonl.gz','final_states.jsonl.gz']
+
+def staged_worker(payload):
+    """Generate/verify outside synchronized workspace, then copy finalized files."""
+    profile,destination,spec=payload
+    temporary=Path(tempfile.mkdtemp(prefix='ena_signed_main_',dir='/tmp'))
+    result=worker((profile,str(temporary),spec))
+    source=temporary/profile['profile'];target=Path(destination)/profile['profile']
+    checkpoint=json.loads((source/'checkpoint.json').read_text())
+    verify_checkpoint(source,checkpoint)
+    target.mkdir(exist_ok=False)
+    for name in [*checkpoint['hashes'],'checkpoint.json']:
+        shutil.copyfile(source/name,target/name)
+    verify_checkpoint(target,checkpoint)
+    shutil.rmtree(temporary)
+    return result
 
 def retained_check(root,checkpoint):
     for name in ['runs.jsonl.gz','paired_contrasts.csv']:
@@ -82,6 +97,7 @@ def main():
     p=argparse.ArgumentParser();p.add_argument('--output',required=True)
     p.add_argument('--upload-helper',required=True);p.add_argument('--workers',type=int,default=6)
     p.add_argument('--block-size',type=int,default=6);p.add_argument('--resume',action='store_true')
+    p.add_argument('--adopt-previous-output',help='Explicit operational revision; adopt only verified profiles with identical scientific source/configuration')
     a=p.parse_args();out=Path(a.output).resolve();helper=Path(a.upload_helper).resolve()
     assert 1<=a.workers<=6 and 1<=a.block_size<=6
     spec=json.loads((ROOT/'configs/signed_social_v0.1_main.json').read_text())
@@ -94,6 +110,26 @@ def main():
     if a.resume:assert json.loads((out/'execution_identity.json').read_text())==identity
     else:
         out.mkdir(parents=True,exist_ok=False);atomic_json(out/'execution_identity.json',identity)
+        if a.adopt_previous_output:
+            previous=Path(a.adopt_previous_output).resolve()
+            old=json.loads((previous/'execution_identity.json').read_text())
+            for key in ['specification','source_sha256','worker_sha256','profiles_sha256','python']:
+                assert old[key]==identity[key],('scientific identity mismatch',key)
+            adopted=[]
+            for profile in selected:
+                prior=previous/profile['profile']
+                if not (prior/'checkpoint.json').exists():continue
+                cp=json.loads((prior/'checkpoint.json').read_text())
+                if (prior/'backup_receipt.json').exists():retained_check(prior,cp)
+                else:verify_checkpoint(prior,cp)
+                target=out/profile['profile'];target.mkdir()
+                for name in [*cp['hashes'],'checkpoint.json','backup_receipt.json']:
+                    if (prior/name).exists():shutil.copyfile(prior/name,target/name)
+                retained_check(target,cp);adopted.append(profile['profile'])
+            atomic_json(out/'operational_revision.json',{'previous_output':str(previous),
+                'previous_identity_sha256':sha(previous/'execution_identity.json'),
+                'adopted_verified_profiles':adopted,'scientific_source_and_configuration_unchanged':True,
+                'change':'Generate and verify full trajectories in isolated /tmp before copying finalized files; previous outputs preserved'})
     write_csv(out/'profiles.csv',selected);start=time.perf_counter()
     for offset in range(0,96,a.block_size):
         block=selected[offset:offset+a.block_size];pending=[]
@@ -111,7 +147,7 @@ def main():
         require_space(out,2.)
         if pending:
             with ProcessPoolExecutor(max_workers=a.workers) as pool:
-                futures=[pool.submit(worker,(profile,str(out),spec)) for profile in pending]
+                futures=[pool.submit(staged_worker,(profile,str(out),spec)) for profile in pending]
                 for f in as_completed(futures):
                     r=f.result();print('Simulated',r['profile_id'],'8000 trajectories',flush=True)
         ids=[profile['profile'] for profile in block]
