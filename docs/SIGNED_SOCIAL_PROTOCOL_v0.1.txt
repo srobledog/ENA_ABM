@@ -1,0 +1,220 @@
+ENAM · Protocolo de inhibición y refuerzo v0.1
+1
+ENAM | Experimento de mecanismos
+Inhibición y refuerzo social
+Protocolo v0.1
+3 de octubre de 2026 · Extensión prospectiva del estudio terminado
+1. Pregunta y estado
+¿La ventaja relativa de los referidos locales sobre el contacto directo depende principalmente de
+una menor inhibición cuando pocos vecinos han adoptado, o persiste con un componente de
+refuerzo exclusivamente positivo?
+Estado: diseño especificado antes de implementar o ejecutar esta extensión. Está motivado por
+resultados ya observados; no es una hipótesis original del estudio principal ni un prerregistro
+público. El estudio terminado conserva su identidad y sus resultados. Este documento no
+contiene nuevas simulaciones.
+2. Intervención: separar la regla existente
+Sea s la proporción de vecinos adoptantes observada antes de decidir; w = beta_social ×
+social_reliance, con w ≥ 0. La utilidad individual U0 conserva intercepto, ajuste del producto,
+satisfacción previa e incertidumbre. La probabilidad continúa siendo logistic(U0 + componente
+social).
+Versión
+Componente social
+Qué permite comprobar
+S: regla firmada
+actual
+w × (2s − 1)
+Inhibición y refuerzo juntos.
+P: solo positivo
+w × max(2s − 1, 0)
+Refuerzo por encima del umbral existente; sin
+penalización debajo.
+M: solo negativo
+w × min(2s − 1, 0)
+Inhibición debajo del umbral; sin premio por encima.
+Z: componente cero
+0
+Referencia sin este término de utilidad.
+La identidad S = P + M se cumple en el componente de utilidad a estado fijo. No implica
+aditividad de probabilidades ni de adopciones finales, debido a la función logística y a la
+dinámica de la red.
+3. Límite que se fija desde el comienzo
+P conserva el punto de corte s = 0,5. No representa cualquier teoría de refuerzo positivo. Usar w
+× s sería otra intervención, que cambia simultáneamente el origen y la pendiente de la
+respuesta. No se añadirá después por obtener resultados poco atractivos. Z conserva la
+influencia de sociality e incertidumbre sobre el componente individual.
+
+
+ENAM · Protocolo de inhibición y refuerzo v0.1
+2
+Diseño de la comparación
+4. Condiciones que permanecen constantes
+Se mantienen los 96 perfiles registrados, las reglas de generación de sus redes y atributos, el
+presupuesto asignado, la contabilidad upfront_expected, el horizonte, las semillas iniciales de
+adoptantes, las puertas de acceso del referido, la credibilidad, la actualización de incertidumbre
+y las políticas de selección del modelo vigente. No se recalibrará el intercepto para igualar tasas
+de adopción.
+La programación será N: reconsideración por exposición o cambio en adopción vecinal. La
+programación E queda fuera de esta extensión acotada. Por ello, la robustez de P y M a otra
+programación no podrá afirmarse con este experimento.
+5. Matriz por perfil y réplica
+Estrategia / destino
+Versiones
+Costos relativos
+Corridas
+Contacto directo D
+S, P, M, Z
+Costo directo = 1; referencia
+compartida
+4
+Referidos locales L
+S, P, M, Z
+1,0 y 1,2
+8
+Referidos con destino global A
+S, P, M, Z
+1,0 y 1,2
+8
+Total por bloque emparejado
+20
+A conserva las puertas y el candidato local original; solo sustituye el destino después de una
+introducción exitosa. No se obliga a igualar el número final de exposiciones. La referencia D se
+usa para ambos costos, sin duplicarla como observación independiente.
+6. Ejecución en dos etapas
+Piloto técnico: 12 perfiles × 100 réplicas × 20 condiciones = 24.000 trayectorias. Se
+reutiliza la lista de perfiles del piloto previo, sin seleccionar por sus resultados: P069, P062,
+P018, P066, P036, P087, P047, P002, P008, P044, P017 y P041.
+Principal especificado: 96 perfiles × 400 réplicas × 20 condiciones = 768.000 trayectorias.
+Se ejecutará solo después de superar las verificaciones técnicas y documentar tiempo y
+almacenamiento estimados. El paso no dependerá del signo, significación o atractivo de los
+resultados del piloto. Si el alcance resulta inviable, se documentará una revisión antes de iniciar
+el principal.
+Ambas etapas usan simulaciones nuevas, sin mezclar réplicas con el estudio anterior. Semilla
+maestra fijada: 2026100301; remuestreo: 2026100302. Espacios separados:
+signed_social_v0.1_pilot y signed_social_v0.1_main. Las cuatro versiones comparten
+inicialización y semillas de procesos dentro de cada bloque. La divergencia de trayectorias
+puede cambiar el consumo posterior de números aleatorios; no se afirmará que cada evento
+recibe un choque idéntico.
+
+
+ENAM · Protocolo de inhibición y refuerzo v0.1
+3
+Estimaciones e interpretación
+7. Resultado y contrastes definidos
+Y cuenta nuevos adoptantes y excluye las semillas iniciales. Para cada versión m y costo r: Gm(r)
+= media[Y_L,m(r) − Y_D,m]. Todos los perfiles tendrán el mismo peso. Las diferencias se
+calculan dentro de cada bloque emparejado antes de promediar.
+Contraste principal
+Definición
+Pregunta
+GP
+GP(r)
+¿Los referidos superan al contacto directo con solo
+refuerzo positivo?
+BP
+GP(r) − GZ(r)
+¿Qué cambia en la ventaja relativa al activar solo la parte
+positiva?
+BM
+GM(r) − GZ(r)
+¿Qué cambia en la ventaja relativa al activar solo la parte
+negativa?
+Diferencia de
+componentes
+BM(r) − BP(r)
+¿Cuál produce mayor cambio en la ventaja relativa, bajo
+estas intervenciones?
+Cuatro contrastes por dos costos: familia primaria de ocho. Se calcularán 10.000 muestras
+bootstrap de réplicas completas dentro de cada perfil, sin remuestrear perfiles. Se preservan
+conjuntamente las 20 condiciones y ambos costos. Se reportan intervalos nominales del 95 % e
+intervalos Bonferroni del 99,375 %. La incertidumbre es Monte Carlo condicional al modelo y a
+este diseño fijo.
+8. Diagnósticos secundarios obligatorios
+Reportar GS, GM y GZ; ventaja local frente a A en cada versión; cambios absolutos Y_L,m −
+Y_L,Z y Y_D,m − Y_D,Z; y la interacción H = GS − GP − GM + GZ. H evalúa la falta de aditividad
+de BP y BM respecto al efecto conjunto. Los diagnósticos secundarios no se incorporarán
+retrospectivamente a la familia primaria.
+Registrar alcance único, repetición y adopciones por tipo de evaluación. Para cada evaluación
+guardar s, w, U0, componentes positivo y negativo, probabilidad, causa, exposición previa y
+resultado. Informar proporción de evaluaciones con s<0,5, s=0,5 y s>0,5 por estrategia; separar
+exposición y cambio vecinal. Registrar cuántas evaluaciones con s>0,5 tienen w>0: P podría
+activarse poco en escenarios de adopción escasa.
+9. Reglas de lectura, incluido un resultado desfavorable
+Margen diagnóstico: ±0,5 nuevos adoptantes, heredado por comparabilidad; no equivale a
+importancia comercial validada. Para los ocho contrastes: intervalo ajustado totalmente sobre
++0,5 o debajo de −0,5 indica efecto que supera el margen; totalmente dentro de [−0,5; +0,5]
+respalda equivalencia diagnóstica. Excluir cero sin superar el margen respalda el signo, con
+relevancia incierta; los demás casos permanecen inconclusos.
+Si BM es positivo y BP equivalente a cero, la evidencia favorecerá una ventaja ligada a inhibición
+bajo esta regla. Si BP es positivo, habrá apoyo a una contribución del refuerzo positivo. Si ambos
+importan, se explicará su combinación y H. Un BP impreciso o una escasa activación de P no
+permiten declarar que el refuerzo es irrelevante. Se publicarán también resultados nulos y
+contrarios.
+
+
+ENAM · Protocolo de inhibición y refuerzo v0.1
+4
+Verificación y trazabilidad
+10. Comprobaciones antes del piloto
+Regla a estado fijo: comprobar s = 0; 0,25; 0,5; 0,75; 1, y pesos cero y positivos. Exigir
+S=P+M, P≥0, M≤0, y probabilidad acotada. En s≤0,5: P=Z y S=M; en s≥0,5: M=Z y S=P. La
+monotonía puntual no garantiza monotonía de la trayectoria completa.
+s (w > 0)
+S / w
+P / w
+M / w
+Z
+0
+−1
+0
+−1
+0
+0,25
+−0,5
+0
+−0,5
+0
+0,5
+0
+0
+0
+0
+0,75
+0,5
+0,5
+0
+0
+1
+1
+1
+0
+0
+Compatibilidad: S debe reproducir la regla vigente y Z el control beta_social=0 a igual estado.
+Antes del piloto, comparar también trayectorias completas con el código anterior usando
+exactamente sus semillas: P069 y P062, réplicas 0, 1 y 2, programación N, las diez condiciones
+S/Z por bloque. Exigir igualdad de resultados y de los campos comunes de las trazas canónicas;
+los diagnósticos nuevos se validan por separado. Esta prueba es de compatibilidad, no parte del
+análisis de eficacia.
+Integridad: comprobar conservación de presupuesto; ausencia de adopción sin conocimiento
+previo; una adopción por consumidor; inicialización idéntica entre condiciones; 20 trayectorias
+únicas por bloque; suma de exposiciones únicas y repetidas; suma de adopciones por causa;
+etiquetas y fórmulas de auditoría correctas para cada versión. Actualizar explícitamente los
+validadores: el auditor antiguo supone siempre el término firmado.
+11. Condiciones de avance y reporte
+El piloto debe completar 24.000 trayectorias sin violaciones; conservar sus entradas, resultados,
+trazas y hashes; y producir estimación de tiempo y espacio para el principal. Un error de código
+se corrige con nueva versión documentada y repetición de los casos afectados. No se descartan
+perfiles difíciles, ceros o extinciones. No se aumenta el tamaño muestral para perseguir
+significación.
+Antes del principal se fijan el commit de implementación, la configuración y el hash de este
+protocolo. No se describe como prueba empírica de consumidores, rentabilidad ni novedad
+bibliográfica. La interpretación se limita a adquisición bajo presupuesto y dependencia de la
+regla social. Los registros de procesos son descriptivos, no una estimación de mediación causal.
+12. Fuentes internas y siguiente acción
+Base local de implementación: commit 6efc9d76f93719d29933de41713048b0f9182f8b de ENA_ABM. Regla:
+src/ena_abm/decision.py; controles: src/ena_abm/mechanisms.py. Perfiles y lista del piloto: configuración
+mechanisms_v0.1_main.json. Motivación: auditoría de procesos v0.1 del 3 de octubre de 2026. El siguiente trabajo es
+implementar las cuatro versiones, verificar compatibilidad y ejecutar el piloto técnico.
+decision.py · SHA-256
+721ea4c7497f2b93050cd58bb4f3fb2ee9521d5f59c4011f2e59df67cbaba9b3
+mechanisms_v0.1_main.json · SHA-256
+308761bed3990b22d6ced09c23ca626d111297c46ff0b23dd868cc69fb2d0aff

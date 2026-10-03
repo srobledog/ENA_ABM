@@ -1,0 +1,14 @@
+{
+  "protocol": "ENA_Protocolo_Inhibicion_Refuerzo_v0.1",
+  "stage": "technical_pilot",
+  "experiment_seed": 2026100301,
+  "resampling_seed": 2026100302,
+  "namespace": "signed_social_v0.1_pilot",
+  "pilot_profiles": ["P069", "P062", "P018", "P066", "P036", "P087", "P047", "P002", "P008", "P044", "P017", "P041"],
+  "replicates": 100,
+  "modes": ["S", "P", "M", "Z"],
+  "relative_costs": [1.0, 1.2],
+  "reevaluation": "N",
+  "expected_trajectories": 24000,
+  "main_execution_enabled": false
+}
