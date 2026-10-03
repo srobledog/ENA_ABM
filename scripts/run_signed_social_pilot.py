@@ -25,7 +25,7 @@ def worker(payload):
         common=configuration(p,replicate=k,master_seed=seed,strategy='direct')
         initial=SignedModel(common,social_mode='S')
         block={'protocol_version':'signed_social_v0.1','profile_id':p['profile'],
-               'stage':'pilot','replicate_id':k,'master_seed':seed,
+               'stage':spec.get('stage','pilot'),'replicate_id':k,'master_seed':seed,
                'initialization_signature':initial.initialization_signature}
         writers['initializations'].write({**block,'configuration':common.to_dict(),
              'edges':initial.graph.edges(),'consumers':[asdict(c) for c in initial.consumers]})

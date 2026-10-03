@@ -1,0 +1,17 @@
+{
+  "protocol": "ENA_Protocolo_Inhibicion_Refuerzo_v0.1",
+  "stage": "main",
+  "experiment_seed": 2026100301,
+  "resampling_seed": 2026100302,
+  "namespace": "signed_social_v0.1_main",
+  "replicates": 400,
+  "modes": ["S", "P", "M", "Z"],
+  "relative_costs": [1.0, 1.2],
+  "reevaluation": "N",
+  "expected_profiles": 96,
+  "expected_trajectories": 768000,
+  "bootstrap_samples": 10000,
+  "diagnostic_margin": 0.5,
+  "primary_contrasts": ["GP", "BP", "BM", "D_components"],
+  "main_execution_enabled": true
+}
