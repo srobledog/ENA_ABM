@@ -28,7 +28,9 @@ class RecoveryTests(unittest.TestCase):
             with patch('ena_abm.mechanism_experiment.profiles', return_value=selected), patch(
                 'ena_abm.mechanism_experiment.selected_pilot_profiles', return_value=spec['pilot_profiles']
             ):
-                run(config, first, workers=1, minimum_free_gib=0, stop_free_gib=0)
+                manifest = run(config, first, workers=1, minimum_free_gib=0, stop_free_gib=0)
+                self.assertIn('P001/runs.jsonl.gz', manifest['full_data_sha256'])
+                self.assertTrue(all('\\' not in key for key in manifest['full_data_sha256']))
                 resumed.mkdir()
                 import shutil
                 shutil.copy(first/'execution_identity.json', resumed/'execution_identity.json')

@@ -357,7 +357,7 @@ def run(specification_path,output_dir,stage='pilot',workers=4, *, resume=False,
         'paired_comparisons':len(selected)*replicates*16,
         'elapsed_seconds':time.perf_counter()-begin,'workers':workers,'python':platform.python_version(),
         'platform':platform.platform(),'per_profile':results,
-        'full_data_sha256':{str(p.relative_to(output)):hashlib.sha256(p.read_bytes()).hexdigest()
+        'full_data_sha256':{p.relative_to(output).as_posix():hashlib.sha256(p.read_bytes()).hexdigest()
             for p in sorted(output.rglob('*')) if p.is_file() and not p.name.endswith('.part')
             and 'recovery' not in p.relative_to(output).parts}}
     for profile in results:

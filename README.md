@@ -12,6 +12,16 @@ This repository contains a theoretical computational experiment with diagnostic,
 
 ## Main design
 
+The design and results below describe the frozen base study v0.5.0. Current
+`main` also includes the subsequent mechanism and signed-social extensions,
+integrated from `codex/mechanisms-v0.1-pilot` on 2026-10-07. Despite that branch
+name, its history includes the completed main-study implementation and report.
+See [integration verification](docs/INTEGRATION_VERIFICATION_2026-10-07.md),
+[mechanism instructions](scripts/README_mechanisms.txt), and the
+[signed-social results report](docs/SIGNED_SOCIAL_MAIN_RESULTS_v0.1.md).
+The original v0.5.0 tag remains unchanged. Integration does not constitute a
+public deposit of the extension data or the current manuscript and supplements.
+
 - 96 stratified parameter profiles, balanced across ring, small-world, and preferential-attachment networks.
 - 100 consumer nodes in the primary design.
 - 30 abstract simulation ticks and two acquisition actions per tick.
